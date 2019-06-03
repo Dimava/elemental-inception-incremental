@@ -23,10 +23,10 @@ function plugin(){
 // 	simplifiedMachineData.machinePressure.baseStats[1] -= 50
 // 	simplifiedMachineData.machineCompress.baseStats[0] -= 50
 // 	simplifiedMachineData.machineCompress.baseStats[1] += 50
-	simplifiedMachineData.machineGemstone.baseStats[0] += 50 / 2
-	simplifiedMachineData.machineGemstone.baseStats[1] += 50 / 2
-	simplifiedMachineData.machineRandomGem.baseStats[0] =625 + 25
-	simplifiedMachineData.machineRandomGem.baseStats[1] =625 + 25
+// 	simplifiedMachineData.machineGemstone.baseStats[0] += 25 * 3
+// 	simplifiedMachineData.machineGemstone.baseStats[1] += 25 * 3
+	simplifiedMachineData.machineRandomGem.baseStats[0] =625 + 25 * 3
+	simplifiedMachineData.machineRandomGem.baseStats[1] =625 + 25 * 3
 	simplifiedMachineData.machineQuartz.baseStats[0] = 525
 	simplifiedMachineData.machineQuartz.baseStats[1] = 700
 }
