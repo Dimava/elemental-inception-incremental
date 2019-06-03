@@ -132,37 +132,37 @@ function drawNumber(ctx, num, x, y, mode = "", align = "left", prefix = "", suff
 		num *= -1;
 		prefix += "-";
 	}
-	if (num > 1e6 && mode != "exp")
+	if (num > 1e6)
 	{
 		mode = "exp";
 	}
-	if ((num == 0 || num >= 0.001 & num < 1000) && mode == "exp")
+	else if (num < 0.001)
+	{
+		mode = "zero"
+	}
+	else if (num >= 0.001 && num < 1000 && mode == "exp")
 	{
 		mode = "fixed";
 	}
+
+	var text = "";
 	if (mode == "exp")
 	{
-		var e = 0;
-		while (num >= 10)
-		{
-			e++;
-			num /= 10;
-		}
-		while (num < 1)
-		{
-			e--;
-			num *= 10;
-		}
-		ctx.fillText(prefix + (Math.trunc(num * 100) / 100).toFixed(2) + "e" + e + suffix, x, y);
+		text = num.toExponential(2).replace(/\+/,"");
 	}
 	else if (mode == "fixed")
 	{
-		ctx.fillText(prefix + (Math.trunc(num * 1000) / 1000).toFixed(3).slice(0, 5) + suffix, x, y);
+		text = (Math.trunc(num * 1000) / 1000).toFixed(3).slice(0, 5);
+	}
+	else if (mode == "zero")
+	{
+		text = "pretty much 0";
 	}
 	else
 	{
-		ctx.fillText(prefix + Math.trunc(num) + suffix, x, y);
+		text = Math.trunc(num);
 	}
 
+	ctx.fillText(prefix + text + suffix, x, y);
 	ctx.restore();
 }
