@@ -166,3 +166,182 @@ function drawNumber(ctx, num, x, y, mode = "", align = "left", prefix = "", suff
 
 	ctx.restore();
 }
+
+
+function drawMachine(ctx, machine) {
+    try {
+        ctx.save();
+        if (images[machine.id]) {
+            ctx.drawImage(images[machine.id], -32, -32);
+        }
+
+        var amount, radius, angle, strokeStyle, fillStyle, steps, amt, maxStep, step, possibleAmount, el, element;
+
+        const outlineWidth = 1
+          , scratchWidth = 0.5
+          , dirUP = -Math.PI / 2
+          , dirUP2 = 3 * Math.PI / 2
+          , minRadius = 8 / 2
+          , maxRadius = 16
+          , commonDivisor = 1.2
+          , nop = -1;
+
+        if (machine.displayElement == 'Clay') {
+            amt++;
+        }
+
+        if (machine.displayElement) {
+            ctx.strokeStyle = strokeStyle = elementalColors[machine.displayElement][0];
+            ctx.fillStyle = fillStyle = elementalColors[machine.displayElement][3];
+            element = data.oElements[machine.displayElement];
+            element.reachedAmount = Math.max(element.reachedAmount || 0, element.amount);
+            amount = element.amount / commonDivisor;
+            possibleAmount = element.reachedAmount / commonDivisor;
+
+            step = 0;
+            maxStep = 1;
+
+            for (amt = amount; amt > 1.03; amt /= 10) {
+                step++;
+            }
+            amt = step ? Math.max(0, (amt - 0.1) * 10 / 9) : amt;
+            if (amt > 1)
+                amt = 1;
+            for (let pamt = possibleAmount; pamt > 1.03; pamt /= 10) {
+                maxStep++;
+            }
+
+            amt = amt
+
+            drawScratches();
+
+            drawPieInner();
+
+            if (machine.displayArray && machine.displayArray.length == 4) {
+                drawQuadOuter();
+            } else {
+                drawPieOuter();
+            }
+
+        }
+
+        function stepRadius(step, maxs=maxStep) {
+            // 0 - center, 
+            if (!step)
+                return 0;
+            if (maxStep < 2 || step == maxs)
+                return maxRadius;
+
+            let pw = 0.8;
+            let ajMaxStep = maxs < 4 ? maxs : maxs - (maxs - 4) / 2;
+            let l = (maxRadius - minRadius) * (1 - pw) / (1 - pw ** ajMaxStep);
+            return maxRadius - l * (1 - pw ** (maxStep - step)) / (1 - pw);
+
+            // return minRadius + (maxRadius - minRadius) * (step - 1) / (maxStep - 1);
+            // TODO
+        }
+
+        function drawScratches(minStep=1) {
+            ctx.lineWidth = scratchWidth;
+            for (let i = minStep; i <= maxStep; i++) {
+                let radius = stepRadius(i, maxStep) + outlineWidth / 2;
+                ctx.beginPath();
+                ctx.arc(0, 0, radius, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+        }
+
+        function drawPieInner() {
+            // step: 0 (0~1)
+            if (amt < 0.001)
+                return;
+            ctx.lineWidth = outlineWidth * 2;
+
+            let angle = amt * 2 * Math.PI;
+            let radius = stepRadius(step + 1);
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, dirUP, dirUP + angle);
+            if (step == 0) {
+                // ctx.lineTo(0, 0);
+                // to prevent huge triangle
+                ctx.arc(0, 0, 0.1, dirUP + angle, dirUP2);
+            } else {
+                ctx.arc(0, 0, stepRadius(step), dirUP + angle, dirUP2);
+            }
+
+            ctx.closePath();
+
+            ctx.stroke();
+            ctx.fill();
+        }
+
+        function drawPieOuter() {
+            ctx.lineWidth = outlineWidth * 2;
+
+            let amt = amount / possibleAmount;
+            let angle = amt * 2 * Math.PI;
+            ctx.beginPath();
+            ctx.arc(0, 0, 32, dirUP, dirUP + angle);
+            ctx.arc(0, 0, 28, dirUP + angle, dirUP, true);
+            ctx.closePath();
+            ctx.stroke();
+            ctx.fill();
+
+        }
+
+        function drawQuadOuter() {
+            let amts = machine.displayArray.map(e=>data.oElements[e].amount / data.oElements[e].possibleAmount);
+            let colors = machine.displayArray.map(e=>elementalColors[e][0]);
+            let bcolors = machine.displayArray.map(e=>elementalColors[e][3]);
+
+            ctx.lineWidth = outlineWidth * 2;
+
+            for (let i = 0; i < 4; i++) {
+                let dir = Math.PI * (i - 1) / 2;
+                let angle = Math.PI * amts[i] / 4 + 0.001; 
+                ctx.strokeStyle = colors[i];
+                ctx.fillStyle = bcolors[i];
+                ctx.beginPath();
+                ctx.arc(0, 0, 32, dir, dir + angle);
+                ctx.arc(0, 0, 28, dir + angle, dir, true);
+                ctx.closePath();
+                ctx.stroke();
+                ctx.fill();
+            }
+        }
+
+        if (machine.displayElement) {
+            // 				var angle = -Math.PI / 2 + Math.PI * 2 * Math.max(0, amount - 0.1) * 10 / 9;
+
+            // 				if (machine.displayStep >= 1)
+            // 				{
+            // 					for (var rad2 = Math.min(radius + machine.displayStep * Math.trunc(Math.max(3, 10 / machine.displayStep)), 16); rad2 > radius; rad2 -= machine.displayStep)
+            // 					{
+            if (machine.displayArrayCD-- <= 0) {
+                machine.displayArrayCD = machine.displayArrayCDMax;
+                machine.displayArrayCurrent = (machine.displayArrayCurrent + 1) % machine.displayArray.length;
+                machine.displayElement = machine.displayArray[machine.displayArrayCurrent];
+            }
+        }
+
+        if (machine.paused) {
+            ctx.drawImage(images.iconPauseTransparent, -optionData.iconSize / 2, 26 - optionData.iconSize / 2);
+        } else {
+            var num = 0;
+            for (var i = 0; i < machine.recipes.length; i++) {
+                if (machine.recipes[i].unlocked && !machine.recipes[i].enabled) {
+                    num++;
+                }
+            }
+            if (num > 0) {
+                ctx.drawImage(images.iconOffTransparent, -optionData.iconSize / 2, 26 - optionData.iconSize / 2);
+                //ctx.fillText(num, 0, 26);
+            }
+        }
+
+        ctx.restore();
+
+    } catch (e) {
+        debugger ;
+    }
+}
