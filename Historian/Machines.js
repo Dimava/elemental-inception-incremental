@@ -918,6 +918,70 @@ var machines = {
 			ctx.textAlign = "left";
 			ctx.fillStyle = ctx.strokeStyle;
 			ctx.fillText(this.recipe.title, optionData.iconSize * 3 + 6, optionData.iconSize / 2);
+
+			let xLeft = optionData.iconSize * 3 + 2.5 + 0.5;
+			let xRight = optionData.iconSize * 3 + 2.5 + 0.5 + 200;
+			
+			ctx.lineWidth = 2;
+			let inputs = this.recipe.inputs;
+			for (let i = 0; i < inputs.length; i++) {
+				let input = inputs[i];
+				let leftBorder = Math.round(200 * i / inputs.length);
+				let rightBorder = Math.round(200 * (i+1) / inputs.length);
+				ctx.beginPath()
+				ctx.lineTo(xLeft + leftBorder, 1);
+				let amt = data.oElements[input.type].amount / (input.min || input.max);
+				if (amt > 1) {
+					ctx.strokeStyle = 'green'
+					ctx.lineTo(xLeft + rightBorder, 1);
+				} else {
+					ctx.strokeStyle = 'goldenrod';
+					ctx.lineTo(xLeft + leftBorder + (rightBorder - leftBorder) * amt, 1);
+				}
+				ctx.stroke();
+			}
+
+			ctx.lineWidth = 1;
+			ctx.strokeStyle = ctx.fillStyle;;
+// 			ctx.strokeStyle = 'red';
+			ctx.beginPath();
+			for (let i = 1; i <= this.recipe.inputs.length; i++) {
+				let leftBorder = Math.round(200 * i / inputs.length);
+				ctx.moveTo(xLeft + leftBorder + 0.5, 0);
+				ctx.lineTo(xLeft + leftBorder + 0.5, 2);
+			}
+			ctx.stroke();
+
+			
+			ctx.lineWidth = 2;
+			let outputs = this.recipe.outputs;
+			for (let i = 0; i < outputs.length; i++) {
+				let output = outputs[i];
+				let leftBorder = Math.round(200 * i / outputs.length);
+				let rightBorder = Math.round(200 * (i+1) / outputs.length);
+				ctx.beginPath()
+				ctx.lineTo(xLeft + leftBorder, optionData.iconSize - 1);
+				let amt = data.oElements[output.type].amount / (output.min || output.max);
+				if (amt > 1) {
+					ctx.strokeStyle = 'blue'
+					ctx.lineTo(xLeft + rightBorder, optionData.iconSize - 1);
+				} else {
+					ctx.strokeStyle = 'darkcyan';
+					ctx.lineTo(xLeft + leftBorder + (rightBorder - leftBorder) * amt, optionData.iconSize - 1);
+				}
+				ctx.stroke();
+			}
+
+			ctx.lineWidth = 1;
+			ctx.strokeStyle = ctx.fillStyle;;
+// 			ctx.strokeStyle = 'red';
+			ctx.beginPath();
+			for (let i = 1; i <= this.recipe.outputs.length; i++) {
+				let leftBorder = Math.round(200 * i / outputs.length);
+				ctx.moveTo(xLeft + leftBorder + 0.5, optionData.iconSize - 0);
+				ctx.lineTo(xLeft + leftBorder + 0.5, optionData.iconSize - 2);
+			}
+			ctx.stroke();
 		}
 		else
 		{
