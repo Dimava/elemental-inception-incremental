@@ -340,94 +340,132 @@ var machines = {
 		}
 		for (var i = 0; i < this.recipes.length; i++)
 		{
-			var temp = this.recipes[i];
+			var recipe = this.recipes[i];
 			if (this.paused)
 			{
 				continue;
 			}
-			if (temp.enabled)
+			if (recipe.enabled)
 			{
 				var state = "working";
-				for (var j = 0; j < temp.inputs.length; j++)
+				for (var j = 0; j < recipe.inputs.length; j++)
 				{
-					if (data.oElements[temp.inputs[j].type].amount < temp.inputs[j].min)
+					if (data.oElements[recipe.inputs[j].type].amount < recipe.inputs[j].min)
 					{
 						state = "empty";
 						break;
 					}
 				}
-				for (var j = 0; j < temp.outputs.length; j++)
+				for (var j = 0; j < recipe.outputs.length; j++)
 				{
-					if (data.oElements[temp.outputs[j].type].amount >= temp.outputs[j].max && !temp.outputs[j].noLimit && temp.outputs[j].ratio)
+					if (data.oElements[recipe.outputs[j].type].amount >= recipe.outputs[j].max && !recipe.outputs[j].noLimit && recipe.outputs[j].ratio)
 					{
 						state = "full";
 						break;
 					}
 				}
-				temp.pieChart.push(state);
+				recipe.pieChart.push(state);
 				if (state !== "empty")
 				{
-					temp.activated = true;
+					recipe.activated = true;
 				}
 				if (state !== "working")
 				{
 					continue;
 				}
 				var amount = 1e300;
-				if (temp.scaling)
+				if (recipe.scaling)
 				{
-					for (var j = 0; j < temp.inputs.length; j++)
+					// scaling
+					for (let input of recipe.inputs)
 					{
-						if (temp.inputs[j].ratio)
+						if (input.ratio)
 						{
-							amount = Math.min(amount, data.oElements[temp.inputs[j].type].amount / temp.inputs[j].ratio);
+							amount = Math.min(amount, data.oElements[input.type].amount / input.ratio);
 						}
 					}
 					amount /= 100;
-					amount *= temp.productionRate * machines.lagbenderMultiplier;
-					for (var j = 0; j < temp.outputs.length; j++)
+					amount *= recipe.productionRate * machines.lagbenderMultiplier;
+					for (let output of recipe.outputs)
 					{
-						if (temp.outputs[j].ratio && !temp.outputs[j].noLimit)
+						if (output.ratio && !output.noLimit)
 						{
-							const overflowMultiplier = 1.0005;
+							const overflowMultiplier = 1.0002;
 							const speedMultiplier = 0.5;
-							var maxAmount = (temp.outputs[j].max * overflowMultiplier - data.oElements[temp.outputs[j].type].amount) / temp.outputs[j].ratio / temp.efficiency * speedMultiplier;
+							var maxAmount = (output.max * overflowMultiplier - data.oElements[output.type].amount) / output.ratio / recipe.efficiency * speedMultiplier;
 							if (amount > maxAmount) {
 								amount = maxAmount;
 							}
-// 							amount = Math.min(amount, maxAmount);
+							// amount = Math.min(amount, maxAmount);
 						}
 					}
 				}
 				else
 				{
+					// fixed
 					amount = 1;
+
+					// not limited by IO!
+					// input is enot. But what about output?
+					// a) does not produce
+					// b) trashes owerflow
+					// c) goes to cap
+
+					// a) does not produce
+					if (recipe.inputs.length && recipe.outputs.length) {
+						for (let output of recipe.outputs) {
+							const overflowMultiplier = 1.0002;
+							const speedMultiplier = 1;
+							var maxAmount = (output.max * overflowMultiplier - data.oElements[output.type].amount) / output.ratio / recipe.efficiency * speedMultiplier;
+							if (amount > maxAmount) {
+								amount = 0;
+							}
+						}	
+
+					}
+
+					
+					// c) goes to cap
+					if (recipe.inputs.length == 0) {
+						for (let output of recipe.outputs) {
+							const overflowMultiplier = 1.0002;
+							const speedMultiplier = 0.5;
+							var maxAmount = (output.max * overflowMultiplier - data.oElements[output.type].amount) / output.ratio / recipe.efficiency * speedMultiplier;
+							if (amount > maxAmount) {
+								amount = maxAmount;
+							}
+						}				
+					}
+					
+
+
+
+
+
 				}
-				if (amount > 0)
-				{
-					var mul = machines.lagbenderMultiplier % 4;
-					for (var j = 0; j < temp.inputs.length; j++)
+
+					if (amount > 0)
 					{
-						data.oElementsFlow[temp.inputs[j].type] -= amount * temp.inputs[j].ratio;
-						if (temp.inputs[j].ratio == 0)
-						{
-							temp.inputs[j].effectReference.volume -= 0.001;
+						// var mul = machines.lagbenderMultiplier % 4;
+						for (let input of recipe.inputs) {
+							data.oElementsFlow[input.type] -= amount * input.ratio;
+							if (input.ratio == 0) {
+								input.effectReference.volume -= 0.001;
+							} else {
+								input.effectReference.volume -= amount * input.ratio;
+							}
 						}
-						else
-						{
-							temp.inputs[j].effectReference.volume -= amount * temp.inputs[j].ratio;
+						for (let output of recipe.outputs) {
+							var flow = amount * output.ratio * recipe.efficiency;
+							// not needed?
+							// flow = Math.min(flow, output.max * 1.2 * mul - data.oElements[output.type].amount)
+							if (data.oElements[output.type].amount < output.max) {
+								data.oElementsFlow[output.type] += flow;
+							}
+							output.effectReference.volume += flow;
 						}
 					}
-					for (var j = 0; j < temp.outputs.length; j++)
-					{
-						var flow = Math.min(amount * temp.outputs[j].ratio * temp.efficiency + data.oElements[temp.outputs[j].type].amount, temp.outputs[j].max * 1.2 * mul) - data.oElements[temp.outputs[j].type].amount;
-						if (data.oElements[temp.outputs[j].type].amount < temp.outputs[j].max)
-						{
-							data.oElementsFlow[temp.outputs[j].type] += flow;
-						}
-						temp.outputs[j].effectReference.volume += flow;
-					}
-				}
+
 			}
 		}
 	},

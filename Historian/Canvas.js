@@ -175,7 +175,8 @@ function drawMachine(ctx, machine) {
             ctx.drawImage(images[machine.id], -32, -32);
         }
 
-        var amount, radius, angle, strokeStyle, fillStyle, steps, amt, maxStep, step, possibleAmount, el, element;
+        var amount, radius, angle, strokeStyle, fillStyle, steps, amt, maxStep, step, possibleAmount, el, element, amountCap
+          , commonDivisor = 1.2;
 
         const outlineWidth = 1
           , scratchWidth = 0.5
@@ -183,7 +184,6 @@ function drawMachine(ctx, machine) {
           , dirUP2 = 3 * Math.PI / 2
           , minRadius = 8 / 2
           , maxRadius = 16
-          , commonDivisor = 1.2
           , nop = -1;
 
         if (machine.displayElement == 'Clay') {
@@ -195,8 +195,11 @@ function drawMachine(ctx, machine) {
             ctx.fillStyle = fillStyle = elementalColors[machine.displayElement][3];
             element = data.oElements[machine.displayElement];
             element.reachedAmount = Math.max(element.reachedAmount || 0, element.amount);
+			possibleAmount = element.possibleAmount;
+			commonDivisor = (Math.abs((possibleAmount * 30 / 1.2) % 1) < 0.001) ? 1.2 : 1;
+
             amount = element.amount / commonDivisor;
-            possibleAmount = element.reachedAmount / commonDivisor;
+            amountCap = element.reachedAmount / commonDivisor;
 
             step = 0;
             maxStep = 1;
@@ -207,7 +210,7 @@ function drawMachine(ctx, machine) {
             amt = step ? Math.max(0, (amt - 0.1) * 10 / 9) : amt;
             if (amt > 1)
                 amt = 1;
-            for (let pamt = possibleAmount; pamt > 1.03; pamt /= 10) {
+            for (let pamt = amountCap; pamt > 1.03; pamt /= 10) {
                 maxStep++;
             }
 
@@ -278,7 +281,7 @@ function drawMachine(ctx, machine) {
         function drawPieOuter() {
             ctx.lineWidth = outlineWidth * 2;
 
-            let amt = amount / possibleAmount;
+            let amt = Math.min(1, amount / amountCap);
             let angle = amt * 2 * Math.PI;
             ctx.beginPath();
             ctx.arc(0, 0, 32, dirUP, dirUP + angle);
@@ -298,7 +301,7 @@ function drawMachine(ctx, machine) {
 
             for (let i = 0; i < 4; i++) {
                 let dir = Math.PI * (i - 1) / 2;
-                let angle = Math.PI * amts[i] / 4 + 0.001; 
+                let angle = Math.PI * Math.min(1, Math.max(0, amts[i])) / 2 + 0.001; 
                 ctx.strokeStyle = colors[i];
                 ctx.fillStyle = bcolors[i];
                 ctx.beginPath();
