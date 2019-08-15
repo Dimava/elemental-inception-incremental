@@ -385,6 +385,19 @@ var machines = {
 					}
 					amount /= 100;
 					amount *= temp.productionRate * machines.lagbenderMultiplier;
+					for (var j = 0; j < temp.outputs.length; j++)
+					{
+						if (temp.outputs[j].ratio && !temp.outputs[j].noLimit)
+						{
+							const overflowMultiplier = 1.0005;
+							const speedMultiplier = 0.5;
+							var maxAmount = (temp.outputs[j].max * overflowMultiplier - data.oElements[temp.outputs[j].type].amount) / temp.outputs[j].ratio / temp.efficiency * speedMultiplier;
+							if (amount > maxAmount) {
+								amount = maxAmount;
+							}
+// 							amount = Math.min(amount, maxAmount);
+						}
+					}
 				}
 				else
 				{
