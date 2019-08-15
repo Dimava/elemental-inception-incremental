@@ -425,7 +425,7 @@ var machines = {
 					}
 
 					// b) trashes overflow
-					if (recipe.inputs.length && recipe.outputs.length == 1 && recipe.outputs[0].max < 1) {
+					if (recipe.inputs.length > 1 && recipe.outputs.length == 1 && recipe.outputs[0].max < 1) {
 						let output = recipe.outputs[0];
 						let flow = output.ratio * recipe.efficiency;
 						let space = output.max - data.oElements[output.type].amount
