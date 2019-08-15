@@ -1107,6 +1107,19 @@ var machines = {
 		drawNumber(ctx, data.oElements[temp.type].amount, 3, 25, elementalDisplayType[temp.type]);
 		ctx.fillText("/", optionData.iconSize / 2 + 50, 25);
 		drawNumber(ctx, temp.min || temp.max, optionData.iconSize + 98, 25, elementalDisplayType[temp.type], "right");
+
+		ctx.beginPath()
+		ctx.lineTo(0, 32);
+		let amt = data.oElements[temp.type].amount / (temp.min || temp.max);
+		if (amt > 1) {
+			ctx.strokeStyle = 'green'
+			ctx.lineTo(optionData.iconSize + 100, 32);
+		} else {
+			ctx.strokeStyle = 'yellow';
+			ctx.lineTo((optionData.iconSize + 100) * amt , 32);
+		}
+		ctx.stroke();
+
 		ctx.restore();
 	},
 	sliderRegionPaymenentSuccess: function ()
