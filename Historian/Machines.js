@@ -408,7 +408,7 @@ var machines = {
 					// not limited by IO!
 					// input is enot. But what about output?
 					// a) does not produce
-					// b) trashes owerflow
+					// b) trashes overflow
 					// c) goes to cap
 
 					// a) does not produce
@@ -424,13 +424,23 @@ var machines = {
 
 					}
 
+					// b) trashes overflow
+					if (recipe.inputs.length && recipe.outputs.length == 1 && recipe.outputs[0].max < 1) {
+						let output = recipe.outputs[0];
+						let flow = output.ratio * recipe.efficiency;
+						let space = output.max - data.oElements[output.type].amount
+						if (space < flow) {
+							amount = 1;
+							data.oElementsFlow[output.type] -= flow - space;
+						}
+					}
 					
 					// c) goes to cap
 					if (recipe.inputs.length == 0) {
 						for (let output of recipe.outputs) {
 							const overflowMultiplier = 1.0002;
 							const speedMultiplier = 0.5;
-							var maxAmount = (output.max * overflowMultiplier - data.oElements[output.type].amount) / output.ratio / recipe.efficiency * speedMultiplier;
+							let maxAmount = (output.max * overflowMultiplier - data.oElements[output.type].amount) / output.ratio / recipe.efficiency * speedMultiplier;
 							if (amount > maxAmount) {
 								amount = maxAmount;
 							}
@@ -952,7 +962,7 @@ var machines = {
 			}
 			ctx.stroke();
 
-			
+
 			ctx.lineWidth = 2;
 			let outputs = this.recipe.outputs;
 			for (let i = 0; i < outputs.length; i++) {
