@@ -946,7 +946,7 @@ var machines = {
 					ctx.lineTo(xLeft + rightBorder, 1);
 				} else {
 					ctx.strokeStyle = 'goldenrod';
-					ctx.lineTo(xLeft + leftBorder + (rightBorder - leftBorder) * amt, 1);
+					ctx.lineTo(xLeft + leftBorder + (rightBorder - leftBorder) * Math.max(0, amt), 1);
 				}
 				ctx.stroke();
 			}
@@ -977,7 +977,7 @@ var machines = {
 					ctx.lineTo(xLeft + rightBorder, optionData.iconSize - 1);
 				} else {
 					ctx.strokeStyle = 'darkcyan';
-					ctx.lineTo(xLeft + leftBorder + (rightBorder - leftBorder) * amt, optionData.iconSize - 1);
+					ctx.lineTo(xLeft + leftBorder + (rightBorder - leftBorder) * Math.max(0, amt), optionData.iconSize - 1);
 				}
 				ctx.stroke();
 			}

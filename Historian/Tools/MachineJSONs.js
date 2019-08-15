@@ -707,7 +707,7 @@ var simplifiedMachineData = {
 					["Water", 700, 900],
 				],
 				out: [
-					["Ice", 1, 4.8, 3, ["GolemWater", 13]],
+					["Ice", 1, 4.8, 3, ["GolemWater", 10]],
 				],
 				upgrade: ["mergeIce3", "Void", 0.01],
 			},
@@ -747,7 +747,7 @@ var simplifiedMachineData = {
 					["Water", 700, 900],
 				],
 				out: [
-					["Steam", 1, 4.8, 3, ["GolemWater", 13]],
+					["Steam", 1, 4.8, 3, ["GolemWater", 10]],
 				],
 				upgrade: ["mergeSteam3", "Void", 0.01],
 			},
@@ -787,7 +787,7 @@ var simplifiedMachineData = {
 					["Earth", 700, 900],
 				],
 				out: [
-					["Magma", 1, 4.8, 3, ["GolemEarth", 13]],
+					["Magma", 1, 4.8, 3, ["GolemEarth", 10]],
 				],
 				upgrade: ["mergeMagma3", "Void", 0.01],
 			},
