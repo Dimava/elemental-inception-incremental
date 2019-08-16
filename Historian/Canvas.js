@@ -220,7 +220,7 @@ function drawMachine(ctx, machine) {
 
             drawPieInner();
 
-            if (machine.displayArray && machine.displayArray.length == 4) {
+            if (machine.displayArray && machine.displayArray.length > 1) {
                 drawQuadOuter();
             } else {
                 drawPieOuter();
@@ -299,9 +299,9 @@ function drawMachine(ctx, machine) {
 
             ctx.lineWidth = outlineWidth * 2;
 
-            for (let i = 0; i < 4; i++) {
-                let dir = Math.PI * (i - 1) / 2;
-                let angle = Math.PI * Math.min(1, Math.max(0, amts[i])) / 2 + 0.001; 
+            for (let i = 0; i < amts.length; i++) {
+                let dir = 2 * Math.PI * (i - 1) / amts.length;
+                let angle = 2 * Math.PI * Math.min(1, Math.max(0, amts[i])) / amts.length + 0.001; 
                 ctx.strokeStyle = colors[i];
                 ctx.fillStyle = bcolors[i];
                 ctx.beginPath();
