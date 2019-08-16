@@ -3552,7 +3552,7 @@ var hotCircle = {
 					baseStats: [1, 1, true, true],
 					in: [
 						["Propane", 0.1, 0.1],
-						["Pyro", 1, 0.1],
+						["Pyro", 1, 0.09],
 					],
 					out: [
 						["Pyro", 1.1, 1.2, 6, ["Steel", 1]],
@@ -3700,7 +3700,7 @@ var powerCircle = {
 					baseStats: [1, 0.8, true, true],
 					in: [
 						["Oil", 100, 1],
-						["Blast", 0, 0.8],
+						["Blast", 0, 0.6],
 						["Cryospire", 0, 1],
 					],
 					out: [
