@@ -330,14 +330,31 @@ function drawMachine(ctx, machine) {
         if (machine.paused) {
             ctx.drawImage(images.iconPauseTransparent, -optionData.iconSize / 2, 26 - optionData.iconSize / 2);
         } else {
-            var num = 0;
-            for (var i = 0; i < machine.recipes.length; i++) {
-                if (machine.recipes[i].unlocked && !machine.recipes[i].enabled) {
-                    num++;
+            var num_disabled = 0, num_wasting = 0;
+
+            for (let recipe of machine.recipes) {
+            	if (!recipe.unlocked) continue;
+
+                if (!recipe.enabled && recipe.outputs.length) {
+                    num_disabled++;
+                }
+                if (recipe.enabled && !recipe.outputs.length && !recipe.alwayson) {
+                	if (!recipe.inputs.find(inp => data.oElements[inp.type].amount < inp.min * 0.95))
+                		num_wasting++;
+                }
+                if (recipe.alwayson) {
+                	if (!recipe.inputs.find(inp => data.oElements[inp.type].amount < inp.min))
+                	if (!recipe.outputs.find(inp => !inp.noLimit && data.oElements[inp.type].amount >= inp.max))
+	                	num_wasting++;
                 }
             }
-            if (num > 0) {
+            if (num_disabled > 0) {
                 ctx.drawImage(images.iconOffTransparent, -optionData.iconSize / 2, 26 - optionData.iconSize / 2);
+                //ctx.fillText(num, 0, 26);
+            }
+            if (num_wasting > 0) {
+            	ctx.rotate(Math.PI/2)
+                ctx.drawImage(images.iconNext, -32, -8, 16, 16);
                 //ctx.fillText(num, 0, 26);
             }
         }
