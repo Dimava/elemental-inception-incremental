@@ -196,7 +196,7 @@ function drawMachine(ctx, machine) {
             element = data.oElements[machine.displayElement];
             element.reachedAmount = Math.max(element.reachedAmount || 0, element.amount);
 			possibleAmount = element.possibleAmount;
-			commonDivisor = (Math.abs((possibleAmount * 30 / 1.2) % 1) < 0.001) ? 1.2 : 1;
+			commonDivisor = (Math.abs(possibleAmount * (possibleAmount < 1 ? 30 : 3) / 1.2) % 1 < 0.001) ? 1.2 : 1;
 
             amount = element.amount / commonDivisor;
             amountCap = element.reachedAmount / commonDivisor;
