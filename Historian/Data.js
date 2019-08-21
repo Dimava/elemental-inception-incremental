@@ -119,6 +119,8 @@ var elementalColors = {
 	SterileGlass: ["#FFFFFF", "#b8dce7", "#b8dce7", "#b8dce7"],
 	CompressionCrystal: ["#000000", "#000000", "#FFFFFF", "#FFFFFF"],
 	PerfectedOrb: ["#FFFFFF", "#FFFFFF", "#000000", "#000000"],
+	
+	AmountBar: ["goldenrod", "green", "darkcyan", "blue"],
 };
 var elementalDisplayType = {
 	Earth: "exp",

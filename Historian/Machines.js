@@ -941,19 +941,18 @@ var machines = {
 				ctx.beginPath()
 				ctx.lineTo(xLeft + leftBorder, 1);
 				let amt = data.oElements[input.type].amount / (input.min || input.max);
-				if (amt > 1) {
-					ctx.strokeStyle = 'green'
+				if (amt > 0.998) {
+					ctx.strokeStyle = elementalColors.AmountBar[1];
 					ctx.lineTo(xLeft + rightBorder, 1);
 				} else {
-					ctx.strokeStyle = 'goldenrod';
+					ctx.strokeStyle = elementalColors.AmountBar[0];
 					ctx.lineTo(xLeft + leftBorder + (rightBorder - leftBorder) * Math.max(0, amt), 1);
 				}
 				ctx.stroke();
 			}
 
 			ctx.lineWidth = 1;
-			ctx.strokeStyle = ctx.fillStyle;;
-// 			ctx.strokeStyle = 'red';
+			ctx.strokeStyle = ctx.fillStyle;
 			ctx.beginPath();
 			for (let i = 1; i <= this.recipe.inputs.length; i++) {
 				let leftBorder = Math.round(200 * i / inputs.length);
@@ -972,19 +971,18 @@ var machines = {
 				ctx.beginPath()
 				ctx.lineTo(xLeft + leftBorder, optionData.iconSize - 1);
 				let amt = data.oElements[output.type].amount / (output.min || output.max);
-				if (amt > 1) {
-					ctx.strokeStyle = 'blue'
+				if (amt > 0.998) {
+					ctx.strokeStyle = elementalColors.AmountBar[3];
 					ctx.lineTo(xLeft + rightBorder, optionData.iconSize - 1);
 				} else {
-					ctx.strokeStyle = 'darkcyan';
+					ctx.strokeStyle = elementalColors.AmountBar[2];
 					ctx.lineTo(xLeft + leftBorder + (rightBorder - leftBorder) * Math.max(0, amt), optionData.iconSize - 1);
 				}
 				ctx.stroke();
 			}
 
 			ctx.lineWidth = 1;
-			ctx.strokeStyle = ctx.fillStyle;;
-// 			ctx.strokeStyle = 'red';
+			ctx.strokeStyle = ctx.fillStyle;
 			ctx.beginPath();
 			for (let i = 1; i <= this.recipe.outputs.length; i++) {
 				let leftBorder = Math.round(200 * i / outputs.length);
@@ -1185,11 +1183,11 @@ var machines = {
 		ctx.beginPath()
 		ctx.lineTo(0, 32);
 		let amt = data.oElements[temp.type].amount / (temp.min || temp.max);
-		if (amt > 1) {
-			ctx.strokeStyle = 'green'
+		if (amt > 0.998) {
+			ctx.strokeStyle = elementalColors.AmountBar[temp.min ? 1 : 3];
 			ctx.lineTo(optionData.iconSize + 100, 32);
 		} else {
-			ctx.strokeStyle = 'yellow';
+			ctx.strokeStyle = elementalColors.AmountBar[temp.min ? 0 : 2];
 			ctx.lineTo((optionData.iconSize + 100) * amt , 32);
 		}
 		ctx.stroke();
