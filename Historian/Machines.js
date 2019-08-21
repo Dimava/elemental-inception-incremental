@@ -410,6 +410,7 @@ var machines = {
 					// a) does not produce
 					// b) trashes overflow
 					// c) goes to cap
+					// d) maybe produce more than that?
 
 					// a) does not produce
 					if (recipe.inputs.length && recipe.outputs.length) {
@@ -447,6 +448,35 @@ var machines = {
 						}				
 					}
 					
+					// d) maybe produce more than that?
+					if (machines.lagbenderMultiplier > 1 && amount > 0 && recipe.outputs.length) {
+						const overflowMultiplier = 1.0002;
+						const speedMultiplier = 1 / 2;//machines.lagbenderMultiplier;
+						maxAmount = machines.lagbenderMultiplier;
+						for (let inp of recipe.inputs) {
+							let limit = data.oElements[inp.type].amount / inp.ratio;
+							maxAmount = Math.min(maxAmount, limit);
+						}
+						for (let out of recipe.outputs) {
+							if (recipe.noLimit) continue;
+							let limit = (out.max * overflowMultiplier - data.oElements[out.type].amount) / out.ratio / recipe.efficiency * speedMultiplier;
+							maxAmount = Math.min(maxAmount, limit);
+						}
+						if (maxAmount > 1) {
+							amount = //amount;
+							 Math.floor(maxAmount);
+						}
+// 						maxAmount = 1e300;
+// 						for (let inp of recipe.inputs) {
+// 							let limit = data.oElements[inp.type].amount / inp.ratio;
+// 							maxAmount = Math.min(maxAmount, limit);
+// 						}
+// 						for (let out of recipe.outputs) {
+// 							if (recipe.noLimit) continue;
+// 							let limit = (out.max * overflowMultiplier - data.oElements[out.type].amount) / out.ratio / recipe.efficiency * speedMultiplier;
+// 							maxAmount = Math.min(maxAmount, limit);
+// 						}
+					}
 
 
 
