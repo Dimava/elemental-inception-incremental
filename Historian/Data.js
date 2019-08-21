@@ -120,7 +120,7 @@ var elementalColors = {
 	CompressionCrystal: ["#000000", "#000000", "#FFFFFF", "#FFFFFF"],
 	PerfectedOrb: ["#FFFFFF", "#FFFFFF", "#000000", "#000000"],
 	
-	AmountBar: ["goldenrod", "green", "darkcyan", "blue"],
+	AmountBar: ["goldenrod", "green", "#1D8EB3", "#c21aff", "#CE8BCC"],
 };
 var elementalDisplayType = {
 	Earth: "exp",

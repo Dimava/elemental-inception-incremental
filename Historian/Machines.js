@@ -1003,7 +1003,7 @@ var machines = {
 				ctx.lineTo(xLeft + leftBorder, optionData.iconSize - 1);
 				let amt = data.oElements[output.type].amount / (output.min || output.max);
 				if (amt > 0.998) {
-					ctx.strokeStyle = elementalColors.AmountBar[3];
+					ctx.strokeStyle = elementalColors.AmountBar[output.noLimit ? 4 : 3];
 					ctx.lineTo(xLeft + rightBorder, optionData.iconSize - 1);
 				} else {
 					ctx.strokeStyle = elementalColors.AmountBar[2];
@@ -1215,7 +1215,7 @@ var machines = {
 		ctx.lineTo(0, 32);
 		let amt = data.oElements[temp.type].amount / (temp.min || temp.max);
 		if (amt > 0.998) {
-			ctx.strokeStyle = elementalColors.AmountBar[temp.min ? 1 : 3];
+			ctx.strokeStyle = elementalColors.AmountBar[temp.min ? 1 : temp.noLimit ? 4 : 3];
 			ctx.lineTo(optionData.iconSize + 100, 32);
 		} else {
 			ctx.strokeStyle = elementalColors.AmountBar[temp.min ? 0 : 2];
