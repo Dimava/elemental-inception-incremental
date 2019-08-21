@@ -415,14 +415,15 @@ var machines = {
 					// a) does not produce
 					if (recipe.inputs.length && recipe.outputs.length) {
 						for (let output of recipe.outputs) {
-							const overflowMultiplier = 1.0002;
-							const speedMultiplier = 1;
-							var maxAmount = (output.max * overflowMultiplier - data.oElements[output.type].amount) / output.ratio / recipe.efficiency * speedMultiplier;
-							if (amount > maxAmount) {
-								amount = 0;
+							if (!output.noLimit) {
+								const overflowMultiplier = 1.0002;
+								const speedMultiplier = 1;
+								var maxAmount = (output.max * overflowMultiplier - data.oElements[output.type].amount) / output.ratio / recipe.efficiency * speedMultiplier;
+								if (amount > maxAmount) {
+									amount = 0;
+								}
 							}
 						}	
-
 					}
 
 					// b) trashes overflow
