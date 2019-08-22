@@ -121,6 +121,16 @@ function draw()
 	{
 		panes.list[i].draw(ctxActive);
 	}
+
+	ctxActive.save();
+	ctxActive.translate(700, 50);
+	ctxActive.rotate(Math.PI / 180 * -30);
+	ctxActive.fillStyle = "#fff";
+	ctxActive.font = "18px Arial";
+	ctxActive.fillText('Dimava\'s fork', 0, 0);
+	ctxActive.font = "12px Arial";
+	ctxActive.fillText('waiting for the upstream rewrite...', 27, 15);
+	ctxActive.restore();
 }
 
 function drawNumber(ctx, num, x, y, mode = "", align = "left", prefix = "", suffix = "")
