@@ -123,13 +123,15 @@ function draw()
 	}
 
 	ctxActive.save();
-	ctxActive.translate(700, 50);
-	ctxActive.rotate(Math.PI / 180 * -30);
+	ctxActive.translate(700, 40);
+	ctxActive.rotate(Math.PI / 180 * -25);
 	ctxActive.fillStyle = "#fff";
 	ctxActive.font = "18px Arial";
 	ctxActive.fillText('Dimava\'s fork', 0, 0);
 	ctxActive.font = "12px Arial";
 	ctxActive.fillText('waiting for the upstream rewrite...', 27, 15);
+	ctxActive.font = "10px Arial";
+	ctxActive.fillText('propose any weird ideas you have meanwhile', 33, 27);
 	ctxActive.restore();
 }
 
